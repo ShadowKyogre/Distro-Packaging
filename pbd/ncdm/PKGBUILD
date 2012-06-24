@@ -1,0 +1,29 @@
+# Maintainer: Sapphira Armageddos <shadowkyogre@aim.com>
+pkgname=ncdm
+pkgver=0.1.6
+pkgrel=1
+arch=('any')
+license=('GPL')
+url="https://github.com/ShadowKyogre/NCDM"
+pkgdesc="An NCurses display manager"
+source=("${pkgname}_-_${pkgver}.tar.gz::https://github.com/ShadowKyogre/NCDM/tarball/${pkgver}")
+depends=('python-urwid' 'xorg-sessreg' 'xorg-xinit' 'coreutils' 'kbd')
+optdepends=('consolekit: for consolekit stuff'
+			'python-dbus: for consolekit stuff'
+			'fbterm: for background images in CLI sessions'
+			'fbv: for background images in CLI sessions')
+install=ncdm.install
+backup=('etc/ncdm/sys.cfg')
+
+build() {
+	cd "${srcdir}/ShadowKyogre-NCDM"-*
+	mkdir -vp ${pkgdir}/usr/{share/ncdm{,/themes},bin}
+	mkdir -vp ${pkgdir}/etc/ncdm
+	cp -v fbterm-bi ncdm  ${pkgdir}/usr/bin
+	cp -v *.py  ${pkgdir}/usr/share/ncdm
+	cp -v sys.cfg  ${pkgdir}/etc/ncdm
+	cp -v default.json  ${pkgdir}/usr/share/ncdm/themes
+}
+
+md5sums=('ef27d7b307065ea8f1b6d531fc53ae5b')
+sha256sums=('13fea7a471bb47c47c4a82377cd9b3d05bf78ce5b94ea28813ec28faf26a4b6c')

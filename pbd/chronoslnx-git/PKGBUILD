@@ -1,0 +1,40 @@
+# Contributor: Sapphira Armageddos <shadowkyogre@aim.com>
+pkgname=chronoslnx-git
+pkgver=20120619
+pkgrel=1
+pkgdesc="A planetary hours/aspect overview program"
+arch='any'
+url="http://shadowkyogre.github.com/ChronosLNX/"
+license=('GPL')
+makedepends=('git')
+depends=('pyqt' 'python-dateutil' 'pyswisseph3' 'swisseph_18')
+install=${pkgname}.install
+source=()
+md5sums=() #generate with 'makepkg -g'
+
+_gitroot=git://github.com/ShadowKyogre/ChronosLNX.git
+_gitname="ChronosLNX"
+
+
+build() {
+  cd "${srcdir}"
+  if test -d "${_gitname}";then
+    cd "${_gitname}"
+    git pull
+  else
+    git clone "$_gitroot" "$_gitname" --depth=1
+  fi
+}
+
+package()
+{
+  cd "${srcdir}/ChronosLNX"
+  mkdir -p ${pkgdir}/usr/{bin,share/{applications,chronoslnx}}
+  cp -v *.py ${pkgdir}/usr/share/chronoslnx
+  cp -v ChronosLNX.desktop ${pkgdir}/usr/share/applications
+  cp -v chronoslnx.sh ${pkgdir}/usr/bin/chronoslnx
+  cp -v schedule.csv ${pkgdir}/usr/share/chronoslnx
+  cp -vR themes ${pkgdir}/usr/share/chronoslnx
+}
+
+# vim:set ts=2 sw=2 et:
