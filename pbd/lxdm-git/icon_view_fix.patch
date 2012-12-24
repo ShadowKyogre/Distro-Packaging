@@ -1,0 +1,28 @@
+diff -aur lxdm/data/themes/Industrial/greeter.ui lxdm.modified/data/themes/Industrial/greeter.ui
+--- lxdm/data/themes/Industrial/greeter.ui	2012-12-20 18:01:59.546850389 -0800
++++ lxdm.modified/data/themes/Industrial/greeter.ui	2012-12-20 18:23:34.013968784 -0800
+@@ -68,6 +68,7 @@
+                             <property name="margin">2</property>
+                             <property name="column-spacing">0</property>
+                             <property name="row-spacing">1</property>
++                            <property name="item-orientation">horizontal</property>
+                           </object>
+                           <packing>
+                             <property name="expand">False</property>
+diff -aur lxdm/src/greeter.c lxdm.modified/src/greeter.c
+--- lxdm/src/greeter.c	2012-12-20 18:01:59.556850392 -0800
++++ lxdm.modified/src/greeter.c	2012-12-20 18:21:40.960595944 -0800
+@@ -959,11 +959,11 @@
+ 	gtk_icon_view_set_selection_mode(GTK_ICON_VIEW(widget),GTK_SELECTION_SINGLE);
+ 	gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(widget),0);
+ 	gtk_icon_view_set_markup_column(GTK_ICON_VIEW(widget),1);
+-#if GTK_CHECK_VERSION(2,22,0)
++/*#if GTK_CHECK_VERSION(2,22,0)
+ 	gtk_icon_view_set_item_orientation(GTK_ICON_VIEW(widget),GTK_ORIENTATION_HORIZONTAL);
+ #else
+ 	gtk_icon_view_set_orientation(GTK_ICON_VIEW(widget),GTK_ORIENTATION_HORIZONTAL);
+-#endif
++#endif*/
+ 	// FIXME: this should be done at greeter-gtk3.ui
+ 	// but set there will cause "Floating point exception"
+ 	gtk_icon_view_set_columns(GTK_ICON_VIEW(widget),1);

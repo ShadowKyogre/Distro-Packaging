@@ -1,0 +1,77 @@
+#Contributor: Phillipe Smith <phillipe@archlinux.com.br>
+pkgname=lxdm-git
+pkgver=20121223
+pkgrel=1
+pkgdesc='Lightweight Display Manager (part of LXDE)'
+arch=('i686' 'x86_64')
+url="http://blog.lxde.org/?p=531"
+license=('GPL')
+groups=('lxde')
+provides=('lxdm')
+conflicts=('lxdm' 'lxdm-svn')
+install=lxdm.install
+backup=('etc/lxdm/lxdm.conf' 'etc/pam.d/lxdm' 'etc/lxdm/Xsession'
+        'etc/lxdm/PreLogin' 'etc/lxdm/LoginReady' 'etc/lxdm/PostLogin'
+        'etc/lxdm/PostLogout' 'etc/lxdm/PreReboot' 'etc/lxdm/PreShutdown')
+depends=(gtk2  xorg-server)
+makedepends=('intltool' 'git') 
+source=('Xsession.patch' 'lxdm.patch' 'lxdm.conf.patch' 'lxdm-pam' 'lxdm-daemon' 'service' 'icon_view_fix.patch' 'actually_kill_user_processes.patch')
+md5sums=('cdfb79089bb32d8ebea534bda269f837'
+         'baed9055e8825a5511712bc095197519'
+         'e0653feadbcf9c8fcea1600008b32850'
+         'e79229a5514bbd5022ca993ed8a2f970'
+         '705f394052fdd0dec22e95321d170de0'
+         'e8cc66eb1a2405d2d9d184a727cbd9d8'
+         '2a35b349d93eeb5df32653047d0cd3be'
+         'a3bdde937a4ec72416f23bd7e644b620')
+
+
+_gitroot="git://lxde.git.sourceforge.net/gitroot/lxde/lxdm"
+_gitname="lxdm"
+
+options=(!strip)
+
+build() {
+export CFLAGS="$CFLAGS -g -O1"
+export CXXFLAGS="$CXXFLAGS -g -O1"
+    cd "$srcdir"
+    msg "Connecting to GIT server...."
+
+    if [ -d $_gitname ] ; then
+        cd $_gitname && git pull origin
+        msg "The local files are updated."
+    else
+        git clone --depth=1 $_gitroot
+    fi
+
+    msg "GIT checkout done or server timeout"
+    msg "Starting make..."
+
+    rm -rf "$srcdir/$_gitname-build"    
+    cp -rfT "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+    cd "$srcdir/$_gitname-build"
+
+    patch -Np1 -i "${srcdir}/icon_view_fix.patch"
+    patch -Np1 -i "${srcdir}/actually_kill_user_processes.patch"
+    ./autogen.sh    
+    ./configure --sysconfdir=/etc --prefix=/usr --libexecdir=/usr/lib/lxdm || return 1
+    make || return 1
+
+    patch -Np0 < $srcdir/lxdm.patch
+    patch -Np0 < $srcdir/lxdm.conf.patch
+    patch -Np0 < $srcdir/Xsession.patch    
+}
+
+package() { 
+    cd "$srcdir/$_gitname-build"
+    make DESTDIR=$pkgdir install 
+    install -m644 $srcdir/lxdm-pam $pkgdir/etc/pam.d/lxdm 
+    install -Dm644 $srcdir/service $pkgdir/usr/lib/systemd/system/lxdm.service
+    install -Dm755 $srcdir/lxdm-daemon $pkgdir/etc/rc.d/lxdm
+    install -d $pkgdir/var/{lib,run}/lxdm
+
+    sed -i -e 's/local\/libexec/lib\/lxdm/' $pkgdir/etc/lxdm/lxdm.conf
+
+    # avoid conflict with filesystem>=2012.06
+    rm -r $pkgdir/var/run
+}
