@@ -1,0 +1,24 @@
+diff -aur AwOken-2.4/AwOken/extra/colorscripts/colorationextra.sh AwOken-2.4.modified/AwOken/extra/colorscripts/colorationextra.sh
+--- AwOken-2.4/AwOken/extra/colorscripts/colorationextra.sh	2012-12-24 01:47:24.719795270 -0800
++++ AwOken-2.4.modified/AwOken/extra/colorscripts/colorationextra.sh	2012-12-24 01:49:35.423160905 -0800
+@@ -10,7 +10,7 @@
+ let "M=100-(100*$G)/255"
+ let "Y=100-(100*$B)/255"
+ 
+-command="-colorize $C/$M/$Y"
++command="-colorize $C/$M/$Y/0"
+ #command="-sigmoidal-contrast 6x1"
+ 
+ COL=${color:0:3}${color:4:3}${color:8:3}
+diff -aur AwOken-2.4/AwOken/extra/colorscripts/colorationscript.sh AwOken-2.4.modified/AwOken/extra/colorscripts/colorationscript.sh
+--- AwOken-2.4/AwOken/extra/colorscripts/colorationscript.sh	2012-12-24 01:47:24.719795270 -0800
++++ AwOken-2.4.modified/AwOken/extra/colorscripts/colorationscript.sh	2012-12-24 01:48:58.889818551 -0800
+@@ -10,7 +10,7 @@
+ let "M=100-(100*$G)/255"
+ let "Y=100-(100*$B)/255"
+ 
+-command="-colorize $C/$M/$Y"
++command="-colorize $C/$M/$Y/0"
+ #command="-sigmoidal-contrast 6x1"
+ 
+ COL=${color:0:3}${color:4:3}${color:8:3}
